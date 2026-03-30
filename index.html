@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SeedOut — Scan Your Food. Know What's In It.</title>
+<meta name="description" content="SeedOut scans food barcodes and instantly flags harmful ingredients like seed oils, hidden sugars, and artificial additives. Clean eating made simple.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sand: #f7efe2;
+    --green: #2d5a3d;
+    --brown: #3b2a1a;
+    --cream: #fdf8f2;
+    --red: #c0392b;
+    --yellow: #d4a017;
+    --sand-dark: #eedfc8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--brown);
+    font-family: 'Lora', serif;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 20px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(253, 248, 242, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--sand-dark);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--green);
+    text-decoration: none;
+    letter-spacing: -0.5px;
+  }
+
+  .nav-logo span {
+    color: var(--brown);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Lora', serif;
+    font-size: 0.9rem;
+    color: var(--brown);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  .nav-links a:hover { opacity: 1; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+    background: var(--cream);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    right: -200px;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(45, 90, 61, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px;
+    left: -100px;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(247, 239, 226, 0.8) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    max-width: 620px;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green);
+    color: var(--sand);
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-family: 'Lora', serif;
+    letter-spacing: 0.5px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.8s ease 0.1s both;
+  }
+
+  .hero-badge::before {
+    content: '🌱';
+    font-size: 0.9rem;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--brown);
+    margin-bottom: 24px;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--green);
+  }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: var(--brown);
+    opacity: 0.75;
+    margin-bottom: 40px;
+    animation: fadeUp 0.8s ease 0.3s both;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s ease 0.4s both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--green);
+    color: var(--sand);
+    padding: 16px 32px;
+    border-radius: 8px;
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(45, 90, 61, 0.25);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(45, 90, 61, 0.35);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    color: var(--brown);
+    padding: 16px 32px;
+    border-radius: 8px;
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1.5px solid var(--sand-dark);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--green);
+    background: rgba(45, 90, 61, 0.04);
+  }
+
+  .hero-visual {
+    position: absolute;
+    right: 48px;
+    top: 50%;
+    transform: translateY(-50%);
+    animation: fadeUp 0.8s ease 0.5s both;
+  }
+
+  .phone-mockup {
+    width: 260px;
+    height: 520px;
+    background: var(--brown);
+    border-radius: 40px;
+    border: 8px solid var(--brown);
+    overflow: hidden;
+    box-shadow: 0 40px 80px rgba(59, 42, 26, 0.25), 0 0 0 1px rgba(59,42,26,0.1);
+    position: relative;
+  }
+
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 16px;
+    gap: 10px;
+  }
+
+  .phone-header {
+    font-family: 'Playfair Display', serif;
+    color: var(--sand);
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(247,239,226,0.15);
+  }
+
+  .scan-result {
+    background: rgba(247,239,226,0.07);
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .scan-product {
+    color: var(--sand);
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    opacity: 0.9;
+  }
+
+  .flag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 0.7rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .flag:last-child { border-bottom: none; }
+
+  .flag-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .flag-dot.red { background: #e74c3c; }
+  .flag-dot.yellow { background: #f39c12; }
+
+  .flag-name { color: #fff; opacity: 0.85; }
+  .flag-label { color: #e74c3c; font-size: 0.65rem; margin-left: auto; }
+  .flag-label.yellow { color: #f39c12; }
+
+  .scan-score {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(231, 76, 60, 0.15);
+    border-radius: 8px;
+    border: 1px solid rgba(231,76,60,0.3);
+  }
+
+  .score-label { color: var(--sand); font-size: 0.7rem; opacity: 0.7; }
+  .score-value { color: #e74c3c; font-size: 0.8rem; font-weight: 700; }
+
+  /* STATS */
+  .stats {
+    background: var(--green);
+    padding: 60px 48px;
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+    color: var(--sand);
+  }
+
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    opacity: 0.75;
+    letter-spacing: 0.5px;
+  }
+
+  /* FEATURES */
+  .features {
+    padding: 100px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green);
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-weight: 900;
+    color: var(--brown);
+    line-height: 1.2;
+    margin-bottom: 60px;
+    max-width: 500px;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--green);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+  }
+
+  .feature-card {
+    background: var(--sand);
+    border-radius: 16px;
+    padding: 36px 32px;
+    border: 1px solid var(--sand-dark);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(59,42,26,0.1);
+  }
+
+  .feature-icon {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .feature-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--brown);
+    margin-bottom: 12px;
+  }
+
+  .feature-desc {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--brown);
+    opacity: 0.7;
+  }
+
+  /* FLAGS SECTION */
+  .flags-section {
+    background: var(--brown);
+    padding: 100px 48px;
+  }
+
+  .flags-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .flags-section .section-label { color: var(--sand); opacity: 0.6; }
+  .flags-section .section-title { color: var(--sand); max-width: 600px; }
+  .flags-section .section-title em { color: #e74c3c; }
+
+  .flags-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .flag-category {
+    background: rgba(247,239,226,0.07);
+    border-radius: 16px;
+    padding: 32px;
+    border: 1px solid rgba(247,239,226,0.1);
+  }
+
+  .flag-category-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--sand);
+    margin-bottom: 20px;
+  }
+
+  .flag-dot-lg {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .flag-dot-lg.red { background: #e74c3c; }
+  .flag-dot-lg.yellow { background: #f39c12; }
+
+  .flag-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .flag-tag {
+    background: rgba(247,239,226,0.1);
+    color: var(--sand);
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    opacity: 0.85;
+    border: 1px solid rgba(247,239,226,0.15);
+  }
+
+  /* MISSION */
+  .mission {
+    padding: 100px 48px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .mission-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--brown);
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .mission-quote::before {
+    content: '"';
+    font-size: 6rem;
+    color: var(--green);
+    opacity: 0.15;
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    font-family: 'Playfair Display', serif;
+    line-height: 1;
+  }
+
+  .mission-author {
+    font-size: 0.9rem;
+    color: var(--green);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  /* CTA SECTION */
+  .cta-section {
+    background: var(--sand);
+    padding: 100px 48px;
+    text-align: center;
+    border-top: 1px solid var(--sand-dark);
+    border-bottom: 1px solid var(--sand-dark);
+  }
+
+  .cta-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 900;
+    color: var(--brown);
+    margin-bottom: 16px;
+  }
+
+  .cta-section h2 em {
+    font-style: italic;
+    color: var(--green);
+  }
+
+  .cta-section p {
+    font-size: 1.1rem;
+    color: var(--brown);
+    opacity: 0.7;
+    margin-bottom: 40px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+  }
+
+  .app-store-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--brown);
+    color: var(--sand);
+    padding: 18px 36px;
+    border-radius: 12px;
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(59,42,26,0.2);
+  }
+
+  .app-store-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(59,42,26,0.3);
+  }
+
+  .coming-soon-badge {
+    display: inline-block;
+    background: var(--green);
+    color: var(--sand);
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    margin-bottom: 24px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--brown);
+    padding: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--sand);
+    text-decoration: none;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    color: var(--sand);
+    text-decoration: none;
+    font-size: 0.9rem;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+
+  .footer-links a:hover { opacity: 1; }
+
+  .footer-social {
+    display: flex;
+    gap: 16px;
+  }
+
+  .footer-social a {
+    color: var(--sand);
+    text-decoration: none;
+    font-size: 0.85rem;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    border: 1px solid rgba(247,239,226,0.2);
+    padding: 6px 14px;
+    border-radius: 100px;
+  }
+
+  .footer-social a:hover { opacity: 1; }
+
+  .footer-copy {
+    width: 100%;
+    color: var(--sand);
+    opacity: 0.4;
+    font-size: 0.8rem;
+    text-align: center;
+    border-top: 1px solid rgba(247,239,226,0.1);
+    padding-top: 24px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 300px; }
+    .hero-visual { position: static; transform: none; margin-top: 40px; }
+    .phone-mockup { width: 220px; height: 440px; }
+    .stats { padding: 48px 24px; gap: 40px; }
+    .features { padding: 60px 24px; }
+    .flags-section { padding: 60px 24px; }
+    .flags-grid { grid-template-columns: 1fr; }
+    .mission { padding: 60px 24px; }
+    .cta-section { padding: 60px 24px; }
+    footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">Seed<span>Out</span></a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#ingredients">Ingredients</a></li>
+    <li><a href="#mission">Our Mission</a></li>
+    <li><a href="support.html">Support</a></li>
+    <li><a href="privacy.html">Privacy</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">Coming to the App Store</div>
+    <h1>Scan your food.<br><em>Know what's in it.</em></h1>
+    <p class="hero-sub">SeedOut instantly flags harmful ingredients — seed oils, hidden sugars, artificial additives and more. Clean eating made simple.</p>
+    <div class="hero-cta">
+      <a href="#" class="btn-primary">
+        🍎 Download on App Store
+      </a>
+      <a href="#features" class="btn-secondary">
+        See how it works →
+      </a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="phone-mockup">
+      <div class="phone-screen">
+        <div class="phone-header">🌱 SeedOut</div>
+        <div class="scan-result">
+          <div class="scan-product">Organic Kids Yogurt</div>
+          <div class="flag">
+            <span class="flag-dot red"></span>
+            <span class="flag-name">High Fructose Corn Syrup</span>
+            <span class="flag-label">Avoid</span>
+          </div>
+          <div class="flag">
+            <span class="flag-dot red"></span>
+            <span class="flag-name">Canola Oil</span>
+            <span class="flag-label">Avoid</span>
+          </div>
+          <div class="flag">
+            <span class="flag-dot red"></span>
+            <span class="flag-name">Artificial Color Red 40</span>
+            <span class="flag-label">Avoid</span>
+          </div>
+          <div class="flag">
+            <span class="flag-dot yellow"></span>
+            <span class="flag-name">Natural Flavors</span>
+            <span class="flag-label yellow">Caution</span>
+          </div>
+          <div class="flag">
+            <span class="flag-dot yellow"></span>
+            <span class="flag-name">Yeast Extract</span>
+            <span class="flag-label yellow">Caution</span>
+          </div>
+        </div>
+        <div class="scan-score">
+          <span class="score-label">Overall Rating</span>
+          <span class="score-value">⚠️ Avoid</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="stat">
+    <div class="stat-number">60+</div>
+    <div class="stat-label">Names for sugar on labels</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">80%</div>
+    <div class="stat-label">Of packaged foods contain seed oils</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">100+</div>
+    <div class="stat-label">Harmful ingredients flagged</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">Free</div>
+    <div class="stat-label">Always free to scan</div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label">How It Works</div>
+  <h2 class="section-title">Clean eating made <em>simple</em></h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">📷</span>
+      <div class="feature-title">Scan Any Barcode</div>
+      <p class="feature-desc">Point your camera at any food product and SeedOut instantly pulls up the full ingredient analysis. No manual searching required.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔴</span>
+      <div class="feature-title">Instant Flag System</div>
+      <p class="feature-desc">Ingredients are color coded — red to avoid, yellow to use caution. Know exactly what's harmful and why in seconds.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🛒</span>
+      <div class="feature-title">Clean Pantry Guide</div>
+      <p class="feature-desc">Browse our curated clean alternatives across every food category. Build a pantry you can trust.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🍽️</span>
+      <div class="feature-title">Clean Recipes</div>
+      <p class="feature-desc">Dozens of recipes using only clean ingredients — no seed oils, no artificial additives, no hidden sugars.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📚</span>
+      <div class="feature-title">Beginner Guides</div>
+      <p class="feature-desc">Learn what seed oils really are, how to spot hidden sugars, and why clean eating matters — all inside the app.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">❤️</span>
+      <div class="feature-title">Health Profiles</div>
+      <p class="feature-desc">Customize your scan results based on your health conditions. Get personalized guidance that matters to you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FLAGS SECTION -->
+<section class="flags-section" id="ingredients">
+  <div class="flags-inner">
+    <div class="section-label">What We Flag</div>
+    <h2 class="section-title">The ingredients the food industry <em>doesn't want you to see</em></h2>
+    <div class="flags-grid">
+      <div class="flag-category">
+        <div class="flag-category-title">
+          <span class="flag-dot-lg red"></span>
+          Avoid — Red Flags
+        </div>
+        <ul class="flag-list">
+          <li class="flag-tag">Canola Oil</li>
+          <li class="flag-tag">Sunflower Oil</li>
+          <li class="flag-tag">Soybean Oil</li>
+          <li class="flag-tag">Vegetable Oil</li>
+          <li class="flag-tag">Corn Oil</li>
+          <li class="flag-tag">High Fructose Corn Syrup</li>
+          <li class="flag-tag">Artificial Colors</li>
+          <li class="flag-tag">Aspartame</li>
+          <li class="flag-tag">Sucralose</li>
+          <li class="flag-tag">Carrageenan</li>
+          <li class="flag-tag">Maltodextrin</li>
+          <li class="flag-tag">BHA / BHT</li>
+          <li class="flag-tag">Sodium Nitrate</li>
+          <li class="flag-tag">+ many more</li>
+        </ul>
+      </div>
+      <div class="flag-category">
+        <div class="flag-category-title">
+          <span class="flag-dot-lg yellow"></span>
+          Use Caution — Yellow Flags
+        </div>
+        <ul class="flag-list">
+          <li class="flag-tag">Natural Flavors</li>
+          <li class="flag-tag">Yeast Extract</li>
+          <li class="flag-tag">Soy Lecithin</li>
+          <li class="flag-tag">Enriched Flour</li>
+          <li class="flag-tag">Dextrose</li>
+          <li class="flag-tag">Sugar in Top 3</li>
+          <li class="flag-tag">Carrageenan</li>
+          <li class="flag-tag">Emulsifiers</li>
+          <li class="flag-tag">MSG Boosters</li>
+          <li class="flag-tag">Autolyzed Yeast</li>
+          <li class="flag-tag">Cane Sugar</li>
+          <li class="flag-tag">+ many more</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="mission" id="mission">
+  <div class="section-label">Our Mission</div>
+  <p class="mission-quote">No one should be doing everything right and still getting worse. The food system has failed too many people. SeedOut gives you the truth your grocery store won't.</p>
+  <div class="mission-author">— Mary, Founder of SeedOut 🌱</div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <span class="coming-soon-badge">Coming Soon</span>
+  <h2>Ready to <em>know</em> what you're eating?</h2>
+  <p>SeedOut is coming to the App Store. Follow us on TikTok and Instagram for daily ingredient exposés while you wait.</p>
+  <a href="#" class="app-store-btn">
+    🍎 Download on the App Store
+  </a>
+  <div style="margin-top: 32px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+    <a href="https://www.tiktok.com/@seedoutapp" class="btn-secondary" target="_blank">TikTok @seedoutapp</a>
+    <a href="https://www.instagram.com/seedoutapp" class="btn-secondary" target="_blank">Instagram @seedoutapp</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="/" class="footer-logo">🌱 SeedOut</a>
+  <ul class="footer-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#ingredients">Ingredients</a></li>
+    <li><a href="privacy.html">Privacy Policy</a></li>
+    <li><a href="support.html">Support</a></li>
+  </ul>
+  <div class="footer-social">
+    <a href="https://www.tiktok.com/@seedoutapp" target="_blank">TikTok</a>
+    <a href="https://www.instagram.com/seedoutapp" target="_blank">Instagram</a>
+  </div>
+  <div class="footer-copy">© 2026 SeedOut. All rights reserved. Scan your food. Know what's in it. 🌱</div>
+</footer>
+
+</body>
+</html>
